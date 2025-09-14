@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<div class="relative w-full h-screen bg-[url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&auto=format&fit=crop&q=80')] bg-cover bg-center flex items-center justify-center">
+  <!-- Login Card -->
+  <div class="relative z-10 w-96 bg-zinc-100/90 px-7 py-5 rounded-[30px] shadow-2xl backdrop-blur-md">
+    <h1 class="text-3xl text-center tracking-tighter font-semibold text-zinc-800 capitalize leading-none mb-4">Login to Pinterest</h1>
+    <form action="/login" method="POST">
+      <input class="border-2 rounded-md block mt-4 w-full px-3 py-3 bg-zinc-50" type="text" name="username" placeholder="Username" required>
+      <input class="border-2 rounded-md block mt-4 w-full px-3 py-3 bg-zinc-50" type="password" name="password" placeholder="Password" required>
+      <a href="#" class="mt-2 font-semibold text-zinc-700 inline-block">Forgot Password ?</a>
+      <input class="border-2 rounded-full block mt-4 w-full px-3 py-3 bg-red-600 text-white cursor-pointer hover:bg-red-700 transition" type="submit" value="Login">
+    </form>
+    <p class="text-sm text-zinc-700 mt-3 text-center">
+      Not on Pinterest yet? <a href="/register" class="font-semibold text-red-600 hover:underline"><strong>Sign up</strong></a>
+    </p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
