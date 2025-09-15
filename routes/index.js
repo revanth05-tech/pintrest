@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
-const User = require('./users');   // ✅ use "User" directly
+const User = require('./users');   // ✅ User model
 const localStrategy = require('passport-local');
 const upload = require('./multer'); // ✅ multer setup
 
@@ -10,6 +10,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 passport.use(new localStrategy(User.authenticate()));
 
+// Register
 router.get('/register', (req, res) => {
   res.render('register');
 });
@@ -31,8 +32,9 @@ router.post('/register', (req, res) => {
     });
 });
 
+// Login
 router.get('/login', (req, res) => {
-  res.render('login');  // ✅ needs login.ejs file
+  res.render('login');
 });
 
 router.post('/login', passport.authenticate("local", {
@@ -40,14 +42,28 @@ router.post('/login', passport.authenticate("local", {
   successRedirect: '/profile'
 }));
 
-router.get('/profile', isLoggedIn, (req, res) => {
-  res.render('profile', { user: req.user });
+// Profile
+router.get('/profile', isLoggedIn, async (req, res) => {
+  const user = await User.findOne({ username: req.session.passport.user });
+  res.render('profile', { user });
 });
-router.post('/fileupload', isLoggedIn, upload.single('image'), (req, res) => {
-  // Handle the uploaded file here
-  console.log(req.file);
-  res.redirect('/profile');
+
+// File Upload (Profile Picture)
+router.post('/fileupload', isLoggedIn, upload.single('image'), async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.session.passport.user });
+    if (user) {
+      user.profileImage = req.file.filename;
+      await user.save();
+    }
+    res.redirect('/profile');
+  } catch (err) {
+    console.log(err);
+    res.redirect('/profile');
+  }
 });
+
+// Logout
 router.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) console.log(err);
@@ -55,6 +71,7 @@ router.get('/logout', (req, res, next) => {
   });
 });
 
+// Auth Middleware
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
