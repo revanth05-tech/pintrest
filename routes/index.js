@@ -3,7 +3,11 @@ const passport = require('passport');
 const router = express.Router();
 const User = require('./users');   // ✅ use "User" directly
 const localStrategy = require('passport-local');
+const upload = require('./multer'); // ✅ multer setup
 
+// Passport Configuration
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 passport.use(new localStrategy(User.authenticate()));
 
 router.get('/register', (req, res) => {
@@ -39,7 +43,11 @@ router.post('/login', passport.authenticate("local", {
 router.get('/profile', isLoggedIn, (req, res) => {
   res.render('profile', { user: req.user });
 });
-
+router.post('/fileupload', isLoggedIn, upload.single('image'), (req, res) => {
+  // Handle the uploaded file here
+  console.log(req.file);
+  res.redirect('/profile');
+});
 router.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) console.log(err);
