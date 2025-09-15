@@ -12,7 +12,7 @@ passport.use(new localStrategy(User.authenticate()));
 
 // Register
 router.get('/register', (req, res) => {
-  res.render('register');
+  res.render('register',{nav:false});
 });
 
 router.post('/register', (req, res) => {
@@ -34,7 +34,7 @@ router.post('/register', (req, res) => {
 
 // Login
 router.get('/login', (req, res) => {
-  res.render('login');
+  res.render('login',{nav:false});
 });
 
 router.post('/login', passport.authenticate("local", {
@@ -45,7 +45,7 @@ router.post('/login', passport.authenticate("local", {
 // Profile
 router.get('/profile', isLoggedIn, async (req, res) => {
   const user = await User.findOne({ username: req.session.passport.user });
-  res.render('profile', { user });
+  res.render('profile', { user, nav: true });
 });
 
 // File Upload (Profile Picture)
