@@ -7,9 +7,12 @@
 
   <!-- Profile Section -->
   <div class="profdets flex flex-col items-center gap-2 mt-8 sm:mt-12 md:mt-20 px-4 sm:px-0">
-    <div class="relative w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full">
-      <img class="w-full h-full object-cover rounded-full" 
-           src="/images/uploads/<%= user.profileImage %>">
+    <div class="relative w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full overflow-hidden">
+      <img 
+        class="w-full h-full object-cover rounded-full" 
+        src="/images/uploads/<%= user.profileImage %>" 
+        alt="Profile Image"
+      >
       <span id="uploadIcon" class="absolute bottom-0 right-0 flex items-center justify-center 
                    w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 rounded-full text-black text-lg 
                    border border-white shadow-md z-10 cursor-pointer">
@@ -17,50 +20,60 @@
       </span>
     </div>
 
-    <h1 class="text-2xl sm:text-3xl font-semibold">Bublu</h1>
-    <h3 class="text-sm md:text-md">@username</h3>
+    <h1 class="text-2xl sm:text-3xl font-semibold"><%= user.name %></h1>
+    <h3 class="text-sm md:text-md"><%= user.username %></h3>
 
     <a href="/edit" 
        class="px-4 sm:px-7 py-2 bg-zinc-700 rounded-full text-xs font-semibold transition-colors hover:bg-zinc-600 focus:outline-none focus:ring">
        Edit
     </a>
 
-    <button class="px-6 sm:px-10 py-2 rounded-lg bg-red-700 text-xs font-semibold hover:bg-red-600 transition-colors">
+    <a href="/add" class="px-6 sm:px-10 py-2 rounded-lg bg-red-700 text-xs font-semibold hover:bg-red-600 transition-colors">
       Add New Post
-    </button>
+    </a>
   </div>
 
   <!-- Cards Section -->
-  <div class="cards flex flex-col sm:flex-row sm:flex-wrap justify-center gap-4 sm:gap-6 lg:gap-10 px-4 sm:px-6 lg:px-10 mt-6 sm:mt-8 lg:mt-10">
-    
-    <!-- Card 1 -->
-    <div class="card w-full max-w-sm sm:w-52 mx-auto sm:mx-0">
-      <div class="w-full h-48 sm:h-40 bg-zinc-200 rounded-lg overflow-hidden">
-        <img class="w-full h-full object-cover" 
-             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9OGud73dwLKbPpbPttLbTY6m57NO8e-iZobmjd_H1GX4WlVY1wczNIyNE5Nzh6Yu0k30&usqp=CAU">
+  <div class="cards flex flex-col sm:flex-row sm:flex-wrap justify-center gap-6 px-4 sm:px-6 lg:px-10 mt-8">
+
+    <!-- Uploaded Pins -->
+    <div class="card w-full sm:w-80 bg-white rounded-xl shadow-md p-4">
+      <h3 class="text-lg sm:text-xl font-semibold mb-3">Your Uploaded Pins</h3>
+      <h5 class="text-sm font-medium opacity-80 mb-4"><%= user.posts.length %> Pins</h5>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <% user.posts.forEach(function(post) { %>
+          <div class="w-full h-28 sm:h-32 bg-zinc-200 rounded-lg overflow-hidden">
+            <img 
+              class="w-full h-full object-cover" 
+              src="/images/uploads/<%= post.image %>" 
+              alt="Post"
+            >
+          </div>
+        <% }) %>
       </div>
-      <h3 class="text-lg sm:text-xl font-semibold mt-3">All Pins</h3>
-      <h5 class="text-sm font-medium opacity-80">28 Pins</h5>
     </div>
 
-    <!-- Card 2 -->
-    <div class="card w-full max-w-sm sm:w-52 mx-auto sm:mx-0">
-      <div class="w-full h-48 sm:h-40 bg-zinc-200 rounded-lg overflow-hidden">
+    <!-- Favorites -->
+    <div class="card w-full sm:w-64 bg-white rounded-xl shadow-md p-4">
+      <h3 class="text-lg sm:text-xl font-semibold mb-3">Favorites</h3>
+      <h5 class="text-sm font-medium opacity-80 mb-4">12 Pins</h5>
+      <div class="w-full h-32 bg-zinc-200 rounded-lg overflow-hidden">
         <img class="w-full h-full object-cover" 
-             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSzmTf2zzXGsmY1EQpP1ci_Yn1zDU3kD1ufQ&s">
+             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSzmTf2zzXGsmY1EQpP1ci_Yn1zDU3kD1ufQ&s" 
+             alt="Favorites">
       </div>
-      <h3 class="text-lg sm:text-xl font-semibold mt-3">Favorites</h3>
-      <h5 class="text-sm font-medium opacity-80">12 Pins</h5>
     </div>
 
-    <!-- Card 3 -->
-    <div class="card w-full max-w-sm sm:w-52 mx-auto sm:mx-0">
-      <div class="w-full h-48 sm:h-40 bg-zinc-200 rounded-lg overflow-hidden">
+    <!-- Memories -->
+    <div class="card w-full sm:w-64 bg-white rounded-xl shadow-md p-4">
+      <h3 class="text-lg sm:text-xl font-semibold mb-3">Memories</h3>
+      <h5 class="text-sm font-medium opacity-80 mb-4">8 Pins</h5>
+      <div class="w-full h-32 bg-zinc-200 rounded-lg overflow-hidden">
         <img class="w-full h-full object-cover" 
-             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdQkE46eqWk-6FoMnv0xQApddZKQAkL3iJxg&s">
+             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdQkE46eqWk-6FoMnv0xQApddZKQAkL3iJxg&s" 
+             alt="Memories">
       </div>
-      <h3 class="text-lg sm:text-xl font-semibold mt-3">Memories</h3>
-      <h5 class="text-sm font-medium opacity-80">8 Pins</h5>
     </div>
 
   </div>
@@ -74,4 +87,5 @@
   uploadIcon.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', () => uploadForm.submit());
 </script>
+
 <%- include('partials/footer') %>

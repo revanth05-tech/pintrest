@@ -13,7 +13,11 @@ const userSchema = mongoose.Schema({
     profileImage:String,
     boards:{type:Array,
       default:[]
-    } 
+    },
+    posts:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }]
 });
 userSchema.plugin(plm);
 
