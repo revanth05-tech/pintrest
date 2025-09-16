@@ -108,6 +108,12 @@ router.get('/show/posts', isLoggedIn, async (req, res) => {
   res.render('show', { user, nav: true });
 });
 
+router.get('/feed', isLoggedIn, async (req, res,next) => {
+  const user = await User.findOne({ username: req.session.passport.user })
+  const posts = await Post.find()
+    .populate('user')
+  res.render('feed', { user, posts, nav: true });
+});
 // File Upload (Profile Picture)
 router.post('/fileupload', isLoggedIn, upload.single('image'), async (req, res) => {
   try {

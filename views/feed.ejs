@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+
+<div class="w-full min-h-full bg-zinc-700 px-6 py-10 text-white">
+  <h1 class="text-2xl font-bold mb-6 text-center">Explore Feed</h1>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+    <% if (posts && posts.length > 0) { %>
+      <% posts.forEach(function(post) { %>
+        <div class="relative group">
+          <!-- Image Card -->
+          <div class="w-full h-60 bg-gray-300 rounded-lg overflow-hidden shadow-md">
+            <img class="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition duration-300" 
+                 src="/images/uploads/<%= post.image %>" 
+                 alt="Post">
+          </div>
+
+          <!-- Overlay on Hover -->
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-between p-3 rounded-lg">
+            <!-- Title -->
+            <h3 class="text-sm font-medium truncate"><%= post.title %></h3>
+            
+            <!-- User + Actions -->
+            <div class="flex items-center justify-between">
+              <span class="text-xs italic">By <%= post.user.username %></span>
+              <a href="/show/posts/<%= post.user._id %>" 
+                 class="bg-sky-500 text-xs px-2 py-1 rounded hover:bg-sky-400">
+                 View
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="col-span-full text-center text-lg">No posts available in the feed yet 🚀</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
