@@ -2,9 +2,11 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 const User = require('./users');   // ✅ User model
-const Post = require('./post');   // ✅ Post model
+const Post = require('./post');    // ✅ Post model
 const localStrategy = require('passport-local');
 const upload = require('./multer'); // ✅ multer setup
+const fs = require('fs');          // ✅ for deleting files
+const path = require('path');      // ✅ for file paths
 
 // Passport Configuration
 passport.serializeUser(User.serializeUser());
@@ -13,7 +15,7 @@ passport.use(new localStrategy(User.authenticate()));
 
 // Register
 router.get('/register', (req, res) => {
-  res.render('register',{nav:false});
+  res.render('register', { nav: false });
 });
 
 router.post('/register', (req, res) => {
@@ -35,14 +37,21 @@ router.post('/register', (req, res) => {
 
 // Login
 router.get('/login', (req, res) => {
-  res.render('login',{nav:false});
+  res.render('login', { nav: false });
 });
 
+router.post('/login', passport.authenticate("local", {
+  failureRedirect: '/login',
+  successRedirect: '/profile'
+}));
+
+// Add Post Page
 router.get('/add', isLoggedIn, async (req, res) => {
   const user = await User.findOne({ username: req.session.passport.user });
   res.render('add', { user, nav: true });
 });
 
+// Create Post
 router.post('/createpost', isLoggedIn, upload.single('image'), async (req, res) => {
   const user = await User.findOne({ username: req.session.passport.user });
   const post = await Post.create({ 
@@ -56,18 +65,47 @@ router.post('/createpost', isLoggedIn, upload.single('image'), async (req, res) 
   res.redirect('/profile');
 });
 
-router.post('/login', passport.authenticate("local", {
-  failureRedirect: '/login',
-  successRedirect: '/profile'
-}));
+// ✅ Delete Post
+router.post('/delete/:id', isLoggedIn, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.redirect('/show/posts');
+
+    // Delete image file from uploads folder
+    const imagePath = path.join(__dirname, 'public', 'images', 'uploads', post.image);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    // Remove post from user's posts array
+    const user = await User.findById(req.user._id);
+    user.posts = user.posts.filter(p => p.toString() !== req.params.id);
+    await user.save();
+
+    // Delete post from Post collection
+    await Post.findByIdAndDelete(req.params.id);
+
+    res.redirect('/show/posts');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/show/posts');
+  }
+});
 
 // Profile
 router.get('/profile', isLoggedIn, async (req, res) => {
   const user = await User
-  
-  .findOne({ username: req.session.passport.user })
-  .populate('posts');
+    .findOne({ username: req.session.passport.user })
+    .populate('posts');
   res.render('profile', { user, nav: true });
+});
+
+// Show Posts
+router.get('/show/posts', isLoggedIn, async (req, res) => {
+  const user = await User
+    .findOne({ username: req.session.passport.user })
+    .populate('posts');
+  res.render('show', { user, nav: true });
 });
 
 // File Upload (Profile Picture)
